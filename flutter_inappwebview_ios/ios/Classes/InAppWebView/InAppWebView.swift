@@ -1428,7 +1428,18 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
             completionHandler(nil)
         }
     }
-    
+
+    open override func evaluateJavaScript(_ javaScriptString: String, completionHandler: (@MainActor @Sendable (Any?, Error?) -> Void)? = nil) {
+        if let applePayAPIEnabled = settings?.applePayAPIEnabled, applePayAPIEnabled {
+            if let completionHandler = completionHandler {
+                completionHandler(nil, nil)
+            }
+            return
+        }
+        super.evaluateJavaScript(javaScriptString, completionHandler: completionHandler)
+    }
+
+    @available(iOS 17.0, *)
     public override func evaluateJavaScript(_ javaScriptString: String, completionHandler: ((Any?, Error?) -> Void)? = nil) {
         if let applePayAPIEnabled = settings?.applePayAPIEnabled, applePayAPIEnabled {
             if let completionHandler = completionHandler {
